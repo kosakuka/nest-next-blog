@@ -1,24 +1,54 @@
-# 取扱説明書(開発者向け)
-## 環境変数の設定方法
-プロジェクトのルートディレクトリに.envファイルを作成し、下記の環境変数を設定してください。
-- FRONT_PORT=<frontのポート番号>
-- FRONT_PROJ_NAME=<frontのプロジェクト名>
-- API_PORT=<apiのポート番号>
-- API_PROJ_NAME=<apiのプロジェクト名>
-- DB_PORT=<dbのポート番号>
-- DB_NAME=<dbで使用するデータベース名>
-- DB_USER=<dbで使用するユーザー名>
-- DB_PASS=<dbで使用するパスワード>
-- PRISMA_STUDIO_PORT=<Prisma studioで使用するポート番号>
+# Next.js × NestJS × AWS で作成したブログサイト
+## URL
+[サイトURL](https://nest-blog-tau.vercel.app/)
 
-## makeコマンドを用いた諸々の操作方法
-Makefile内コマンドを用いた諸々の操作方法は以下のとおりです。
-- imageのビルド: make build
-- 環境の起動: make up
-- 環境のシャットダウン: make down
-- 各種コンテナに入り作業をする: make front-exec / make api-exec / make db-exec
-- dbコンテナに入りつつデータベースにログイン: make db-login
-- front(React)のプロジェクト新規作成: make front-create-app
-- api(NestJS)のプロジェクト新規作成: make api-create-app
-- (注意)front, apiイメージを削除: make front-rmi / make api-rmi
-- (注意)各種volume削除: make front-rmvol / make api-rmvol / make db-rmvol
+[Github](https://github.com/kosakuka/nest-next-blog)
+
+## 概要
+単純なブログサイトです。特徴としては、
+- バックエンド(DBとの連携、JWTトークンの発行)に、目標設定で課題としたNestJSを使って実装した
+- インフラに、目標設定で課題としたAWSを使用した
+- フロントエンドにNext.jsを使い、シングルページアプリケーション(画面遷移の際、ブラウザがリロードされない)を実現した
+![記事一覧](./pic/blogs.png)
+
+## 機能
+- 記事一覧
+- 記事詳細
+- 検索機能
+- 管理者ログイン
+- 投稿・更新・削除 (要ログイン)
+
+## 使用技術
+### フロントエンド
+- TypeScript (言語)
+- Next.js (フレームワーク)
+- TailwindCSS (cssフレームワーク)
+### バックエンド
+- TypeScript (言語)
+- NestJS (フレームワーク)
+- Prisma (ORM)
+- PostgreSQL (DB)
+### インフラ
+- AWS (バックエンド、DBのデプロイ)
+- Vercel (フロントエンドのデプロイ)
+### 開発環境
+- Docker
+- docker-compose
+
+![インフラ構成図](./pic/infra.svg)
+
+## 苦労した点
+### フロント 認証情報の保持方法
+当初はRedux等の状態管理ツールを使いグローバル変数的な持たせ方つもりだった。
+しかし、Nextだと上手いことできず、結局cookieに保持したJWTトークンを、ページ遷移毎に読み込む方法を取った。
+### EC2へのNestJSデプロイ
+NestjsのEC2デプロイの方法として、
+- Node.jsのインストール
+- git clone
+- envファイル作成
+
+といった泥臭い作業を2インスタンス分行い、時間がかかってしんどかった。実務だと、もっと沢山インスタンスを立て必要があると思っており、今回のような作業を全インスタンスに行っていたらきりがないと思う。
+そのため、自動デプロイ等の効率的に環境作成できる方法を学ぶ必要があると感じた。
+### AWSのインフラ構成変更により生じた不具合
+当初、Next.jsもAWSにデプロイする予定だったが、費用の節約のために、フロントは無料インフラのVercelにデプロイするやり方に途中変更した。しかし、フロント用のEC2やセキュリティグループを消したことにより、ドメインでの接続ができなくなってしまった。
+ドメイン周りの設定を1からやり直した結果、なんとか復旧できたから良かったものの、安易に構成変更はしないほうがよいとしみじみ思った。
