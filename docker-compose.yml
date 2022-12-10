@@ -33,7 +33,7 @@ services:
       - .:/workspace
       - api_store:/workspace/api/$API_PROJ_NAME/node_modules
     ports:
-      - "3001:3000"
+      - "3001:3001"
       - "5555:5555"
     # docker-compose起動時コマンド。プロジェクトディレクトリがある場合はアプリを起動し、ない場合はメッセージを出して待機
     command: >
