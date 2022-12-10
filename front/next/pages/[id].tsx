@@ -20,6 +20,15 @@ const Blog: NextPage<PropsIfc> = (props) => {
     setJwtToken(cookie.get("access_token"));
   }, []);
 
+  // ブログの本文を改行ありで表示させる
+  // そのためには、propsで渡される本文(props.blog.content)を \n で分割して配列にした後、
+  // 各要素にindexを設けた連想配列にする必要がある。それを、各要素をpタグで囲み、画面に表示する。
+  const contentArray = props.blog.content.split("\n");
+  const contentArrayWithIndex: { id: number; content: string }[] = [];
+  for (let index = 0; index < contentArray.length; index++) {
+    contentArrayWithIndex.push({ id: index, content: contentArray[index] });
+  }
+
   return (
     <div>
       <Head>
@@ -82,7 +91,11 @@ const Blog: NextPage<PropsIfc> = (props) => {
           )}
           <p className="italic">{props.blog.createdAt.toLocaleString()}</p>
           <h1 className="text-2xl font-bold my-1">{props.blog.title}</h1>
-          <p className="break-words">{props.blog.content}</p>
+          {contentArrayWithIndex.map((ele) => (
+            <p key={ele.id} className="break-words">
+              {ele.content}
+            </p>
+          ))}
         </div>
       </Layout>
     </div>
