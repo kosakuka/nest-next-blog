@@ -76,7 +76,7 @@ const BlogForm = (props: PropsIfc) => {
                   (e as AxiosError<IErrorResponse>).response &&
                   (e as AxiosError<IErrorResponse>).response!.status === 401
                 ) {
-                  alert("認証情報が正しくありません。");
+                  alert("認証情報が正しくありません。再度ログインしてください。");
                 } else if (
                   (e as AxiosError<IErrorResponse>).response &&
                   (e as AxiosError<IErrorResponse>).response!.status === 400
