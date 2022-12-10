@@ -59,7 +59,9 @@ const Blog: NextPage<PropsIfc> = (props) => {
                       (e as AxiosError<IErrorResponse>).response &&
                       (e as AxiosError<IErrorResponse>).response!.status === 401
                     ) {
-                      alert("認証情報が正しくありません。再度ログインしてください。");
+                      alert(
+                        "認証情報が正しくありません。再度ログインしてください。"
+                      );
                     } else if (
                       (e as AxiosError<IErrorResponse>).response &&
                       (e as AxiosError<IErrorResponse>).response!.status === 400
@@ -91,11 +93,15 @@ const Blog: NextPage<PropsIfc> = (props) => {
           )}
           <p className="italic">{props.blog.createdAt.toLocaleString()}</p>
           <h1 className="text-2xl font-bold my-1">{props.blog.title}</h1>
-          {contentArrayWithIndex.map((ele) => (
-            <p key={ele.id} className="break-words">
-              {ele.content}
-            </p>
-          ))}
+          {contentArrayWithIndex.map((ele) =>
+            ele.content === "" ? (
+              <br key={ele.id} />
+            ) : (
+              <p key={ele.id} className="break-words">
+                {ele.content}
+              </p>
+            )
+          )}
         </div>
       </Layout>
     </div>
